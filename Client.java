@@ -11,7 +11,7 @@ public class Client {
 
   public void runClient() {
     try {
-       System.out.println("Step 1: Create a Socket to make connection.");
+      System.out.println("Step 1: Create a Socket to make connection.");
       System.out.println("Attempting connection...");
       client = new Socket(InetAddress.getByName("localhost"), 5050);
 
@@ -27,20 +27,20 @@ public class Client {
 
       // Step 3: Process connection.
       Scanner scanner = new Scanner(System.in);  // Read user input from terminal
-
+        
       do {
         System.out.print("CLIENT>>> ");
         message = scanner.nextLine();
         output.writeObject("CLIENT>>> " + message);
         output.flush();
-
         try {
           message = (String) input.readObject();
           System.out.println("\n" + message);
         } catch (ClassNotFoundException cnfex) {
           System.out.println("\nUnknown object type received");
         }
-      } while (!message.equals("SERVER>>> TERMINATE"));
+        
+      } while (!message.equalsIgnoreCase("SERVER>>> SAIR"));
 
       // Step 4: Close connection.
       System.out.println("Closing connection.");

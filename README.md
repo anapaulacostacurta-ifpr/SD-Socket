@@ -26,8 +26,8 @@ Este projeto cria um aplicativo cliente-servidor simples onde o cliente se conec
 * Obter fluxos de E/S: Cria objetos ObjectOutputStream e ObjectInputStream para enviar e receber dados (mensagens) pela conexão estabelecida.
 
 ### Processar conexão:
-* Envia uma mensagem de boas-vindas ("SERVER>>> Conexão bem-sucedida") ao cliente.
-* Entra em um loop que continua até o cliente enviar uma mensagem "CLIENT>>> TERMINATE".
+* Libera o prompt para envio de mensagem resposta ("SERVER>>> ") ao cliente.
+* Entra em um loop que continua até o cliente enviar uma mensagem "CLIENT>>> SAIR".
 * Lê uma mensagem do cliente usando input.readObject().
 * Captura uma potencial ClassNotFoundException caso o tipo de objeto recebido seja inesperado.
 * Fechar conexão: Uma vez que o loop termina, fecha os fluxos e o objeto Socket, indicando uma conexão encerrada.
@@ -49,7 +49,7 @@ Este projeto cria um aplicativo cliente-servidor simples onde o cliente se conec
 
 ### Processar conexão:
 * Usa um objeto Scanner para ler a entrada do usuário a partir do terminal.
-* Entra em um loop que continua até o usuário digitar "CLIENT>>> TERMINATE".
+* Entra em um loop que continua até o usuário digitar "SERVER>>> SAIR".
 * Solicita uma mensagem ao usuário com "CLIENT>>> ".
 * Lê a entrada do usuário e adiciona "CLIENT>>> " à mensagem.
 * Envia a mensagem ao servidor usando output.writeObject().
@@ -58,8 +58,18 @@ Este projeto cria um aplicativo cliente-servidor simples onde o cliente se conec
 * Fechar conexão: Semelhante ao servidor, fecha os fluxos e o objeto Socket quando o loop termina.
 
 # Atividade Prática:
-* Crie um Repositório no github para incluir os programas;
-* Compile e Executes os programas com log de execução com data e hora de execução;
-* Realize o upload dos prints no repositório;
-* Envie o link do repositório do github com resposta da atividade;
+* Crie seu Repositório no github do seu perfil para incluir os programas;
+* Compile e Execute os programas;
+* Para executar deverá iniciar o Server em uma bash e o cliente em outro bash, separados;
+* Realize o upload dos prints das execuções no seu repositório;
+* Envie o link do seu repositório do github com resposta da atividade;
 
+## Envie as seguintes mensagems:
+* CLIENT>>> olá
+* SERVER>>> olá, tudo bem?
+* CLIENT>>> tudo certo! vou sair da conversa ok?
+* SERVER>>> ok
+* CLIENT>>> sair
+* SERVER>>> ok
+* CLIENT>>> sair
+* SERVER>>> sair

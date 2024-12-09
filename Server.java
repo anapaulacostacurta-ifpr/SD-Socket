@@ -8,6 +8,7 @@ public class Server {
   private Socket connection;
   private ObjectOutputStream output;
   private ObjectInputStream input;
+  private String message = "";
 
   public void runServer() {
     try {
@@ -28,11 +29,9 @@ public class Server {
         System.out.println("Step 3: Get input streams.");
         input = new ObjectInputStream(connection.getInputStream());
         System.out.println("Got I/O streams\n");
-
-        // Step 4: Process connection.
-        String message = "SERVER>>> Connection successful";
-        output.writeObject(message);
-        output.flush();
+        
+        // Step 3: Process connection.
+        Scanner scanner = new Scanner(System.in);  // Read user input from terminal
 
         do {
           try {
@@ -41,7 +40,11 @@ public class Server {
           } catch (ClassNotFoundException cnfex) {
             System.out.println("\nUnknown object type received");
           }
-        } while (!message.equals("CLIENT>>> TERMINATE"));
+          System.out.print("SERVER>>> ");
+          message = scanner.nextLine();
+          output.writeObject("SERVER>>> " + message);
+          output.flush();
+        } while (!message.equalsIgnoreCase("CLIENT>>> SAIR"));
 
         // Step 5: Close connection.
         System.out.println("\nUser terminated connection");
