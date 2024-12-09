@@ -1,153 +1,69 @@
-// Fig. 21.3: Server.java
-// Set up a Server that will receive a connection
-// from a client, send a string to the client,
-// and close the connection.
-package Sockets;
-
 import java.io.*;
 import java.net.*;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+import java.util.*;
 
-public class Server extends JFrame {
-   private JTextField enter;
-   private JTextArea display;
-   ObjectOutputStream output;
-   ObjectInputStream input;
+public class Server {
 
-   public Server()
-   {
-      super( "Server" );
+  private ServerSocket server;
+  private Socket connection;
+  private ObjectOutputStream output;
+  private ObjectInputStream input;
 
-      Container c = getContentPane();
+  public void runServer() {
+    try {
+      // Step 1: Create a ServerSocket.
+      server = new ServerSocket(5050, 100);
 
-      enter = new JTextField();
-      enter.setEnabled( false );
-      enter.addActionListener(
-         new ActionListener() {
-            public void actionPerformed( ActionEvent e )
-            {
-               sendData( e.getActionCommand() );
-            }
-         }
-      );
-      c.add( enter, BorderLayout.NORTH );
+      while (true) {
+        // Step 2: Wait for a connection.
+        System.out.println("Waiting for connection...");
+        connection = server.accept();
 
-      display = new JTextArea();
-      c.add( new JScrollPane( display ),
-             BorderLayout.CENTER );
+        System.out.println("Connection received from: " + connection.getInetAddress().getHostName());
 
-      setSize( 300, 150 );
-      show();
-   }
+        System.out.println("Step 3: Get output streams.");
+        output = new ObjectOutputStream(connection.getOutputStream());
+        System.out.println("Step 3: output.flush();");
+        output.flush();
+        System.out.println("Step 3: Get input streams.");
+        input = new ObjectInputStream(connection.getInputStream());
+        System.out.println("Got I/O streams\n");
 
-   public void runServer()
-   {
-      ServerSocket server;
-      Socket connection;
-      int counter = 1;
+        // Step 4: Process connection.
+        String message = "SERVER>>> Connection successful";
+        output.writeObject(message);
+        output.flush();
 
+        do {
+          try {
+            message = (String) input.readObject();
+            System.out.println("\n" + message);
+          } catch (ClassNotFoundException cnfex) {
+            System.out.println("\nUnknown object type received");
+          }
+        } while (!message.equals("CLIENT>>> TERMINATE"));
+
+        // Step 5: Close connection.
+        System.out.println("\nUser terminated connection");
+        output.close();
+        input.close();
+        connection.close();
+      }
+    } catch (EOFException eof) {
+      System.out.println("Client terminated connection");
+    } catch (IOException io) {
+      io.printStackTrace();
+    } finally {
       try {
-         // Step 1: Create a ServerSocket.
-         server = new ServerSocket( 5050, 100 );
-
-         while ( true ) {
-            // Step 2: Wait for a connection.
-            display.setText( "Waiting for connection\n" );
-            connection = server.accept();
-            
-            display.append( "Connection " + counter +
-               " received from: " +
-               connection.getInetAddress().getHostName() );
-
-            // Step 3: Get input and output streams.
-            output = new ObjectOutputStream(
-                         connection.getOutputStream() );
-            output.flush();
-            input = new ObjectInputStream(
-                        connection.getInputStream() );
-            display.append( "\nGot I/O streams\n" );
- 
-            // Step 4: Process connection.
-            String message =
-               "SERVER>>> Connection successful";
-            output.writeObject( message );
-            output.flush();
-            enter.setEnabled( true );
-
-            do {
-               try {
-                  message = (String) input.readObject();
-                  display.append( "\n" + message );
-                  display.setCaretPosition(
-                     display.getText().length() );
-               }
-               catch ( ClassNotFoundException cnfex ) {
-                  display.append(
-                     "\nUnknown object type received" );
-               }
-            } while ( !message.equals( "CLIENT>>> TERMINATE" ) );
-
-            // Step 5: Close connection.
-            display.append( "\nUser terminated connection" );
-            enter.setEnabled( false );
-            output.close();
-            input.close();
-            connection.close();
-
-            ++counter;
-         }
+        server.close();
+      } catch (IOException e) {
+        e.printStackTrace();
       }
-      catch ( EOFException eof ) {
-         System.out.println( "Client terminated connection" );
-      }
-      catch ( IOException io ) {
-         io.printStackTrace();
-      }
-   }
+    }
+  }
 
-   private void sendData( String s )
-   {
-      try {
-         output.writeObject( "SERVER>>> " + s );
-         output.flush();
-         display.append( "\nSERVER>>>" + s );
-      }
-      catch ( IOException cnfex ) {
-         display.append(
-            "\nError writing object" );
-      }
-   }
-
-   public static void main( String args[] )
-   {
-      Server app = new Server();
-
-      app.addWindowListener(
-         new WindowAdapter() {
-            public void windowClosing( WindowEvent e )
-            {
-               System.exit( 0 );
-            }
-         }
-      );
-
-      app.runServer();
-   }
+  public static void main(String args[]) {
+    Server app = new Server();
+    app.runServer();
+  }
 }
-
-/**************************************************************************
- * (C) Copyright 1999 by Deitel & Associates, Inc. and Prentice Hall.     *
- * All Rights Reserved.                                                   *
- *                                                                        *
- * DISCLAIMER: The authors and publisher of this book have used their     *
- * best efforts in preparing the book. These efforts include the          *
- * development, research, and testing of the theories and programs        *
- * to determine their effectiveness. The authors and publisher make       *
- * no warranty of any kind, expressed or implied, with regard to these    *
- * programs or to the documentation contained in these books. The authors *
- * and publisher shall not be liable in any event for incidental or       *
- * consequential damages in connection with, or arising out of, the       *
- * furnishing, performance, or use of these programs.                     *
- *************************************************************************/
