@@ -1,4 +1,5 @@
-# Comunicação entre processos: Socket
+# Comunicação entre processos: Socket -  portas de comunicação locais ou de rede (versão segura: SSL)
+
 
 Este projeto cria um aplicativo cliente-servidor simples onde o cliente se conecta ao servidor e ambos podem trocar mensagens de texto. O servidor escuta por conexões em uma porta específica e permite que vários clientes se conectem (devido à fila de espera de 100). No entanto, o código atual lida apenas com uma conexão por vez.
 
